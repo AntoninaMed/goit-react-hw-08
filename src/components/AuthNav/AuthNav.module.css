@@ -9,7 +9,7 @@
   font-weight: bold;
   background-color: transparent;
   border-radius: 4px;
-  border: 1px solid #232327;
+  border: none;
   text-decoration: none;
 }
 .link:nth-child(1) {
