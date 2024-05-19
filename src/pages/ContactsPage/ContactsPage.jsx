@@ -1,42 +1,28 @@
-import { Filter } from "../../components/Filter/Filter";
-import { ContactList } from "../../components/ContactList/ContactList";
-import { ButtonAdd } from "../../components/ButtonAdd/ButtonAdd";
-import { Modal } from "../../components/Modal/Modal";
-import { Outlet } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { FallingLines } from "react-loader-spinner";
-import css from "./ContactsPage.module.css";
-import { getError, getIsLoading } from "../../redux/contacts/selectors";
-import { fetchContacts } from "../../redux/contacts/operations";
+import { DocumentTitle } from "../components/DocumentTitle";
+import { ContactList } from "../components/ContactList/ContactList";
+import { fetchContacts } from "../redux/contacts/operations";
+import { selectIsLoading } from "../redux/contacts/selectors";
+import { ContactForm } from "../components/ContactForm/ContactForm";
+import { SearchBox } from "../components/SearchBox/SearchBox";
 
-const ContactsPage = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const isLoading = useSelector(getIsLoading);
-  const error = useSelector(getError);
+const Contacts = () => {
   const dispatch = useDispatch();
+  const isLoading = useSelector(selectIsLoading);
 
   useEffect(() => {
     dispatch(fetchContacts());
   }, [dispatch]);
 
   return (
-    <div className={css.div}>
-      <Filter />
-      {isLoading && !error && (
-        <FallingLines
-          color="#0824AF"
-          width="100"
-          visible={true}
-          ariaLabel="falling-lines-loading"
-        />
-      )}
+    <div>
+      <ContactForm />
+      <DocumentTitle>Your contacts</DocumentTitle>
+      <div>{isLoading && "Request in progress..."}</div>
+      <SearchBox />
       <ContactList />
-      <Outlet />
-      {isModalOpen && <Modal closeModal={setIsModalOpen} />}
-      <ButtonAdd openModal={setIsModalOpen} />
     </div>
   );
 };
-
-export default ContactsPage;
+export default Contacts;
