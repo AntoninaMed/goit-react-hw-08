@@ -1,10 +1,27 @@
-import css from "./Home.module.css";
+import { DocumentTitle } from "../../components/App/DocumentTitle";
+import css from "../Pages.module.css";
+import { NavLink } from "react-router-dom";
 
 const Home = () => {
   return (
-    <div className={css.div}>
-      <h1 className={css.h1}>WELCOME TO PHONEBOOK</h1>
-    </div>
+    <>
+      <DocumentTitle>Home</DocumentTitle>
+      <div className={css.container}>
+        <h1 className={css.title}>Contacts manager welcome page</h1>
+
+        <p className={css.link}>
+          Do you want to{" "}
+          <NavLink to="/register" className={css.span}>
+            Register
+          </NavLink>{" "}
+          or{" "}
+          <NavLink to="/login" className={css.span}>
+            Log In
+          </NavLink>{" "}
+          ?
+        </p>
+      </div>
+    </>
   );
 };
 

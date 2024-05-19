@@ -1,36 +1,28 @@
-import { useParams } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { DocumentTitle } from "../components/DocumentTitle";
+import { ContactList } from "../components/ContactList/ContactList";
+import { fetchContacts } from "../redux/contacts/operations";
+import { selectIsLoading } from "../redux/contacts/selectors";
+import { ContactForm } from "../components/ContactForm/ContactForm";
+import { SearchBox } from "../components/SearchBox/SearchBox";
 
-import { FallingLines } from "react-loader-spinner";
-import css from "./ContactDetails.module.css";
-import {
-  getContacts,
-  getError,
-  getIsLoading,
-} from "../../redux/contacts/selectors";
+const Contacts = () => {
+  const dispatch = useDispatch();
+  const isLoading = useSelector(selectIsLoading);
 
-const ContactDetails = () => {
-  const { id } = useParams();
-  const contacts = useSelector(getContacts);
-
-  const contact = contacts.find((contact) => contact.id === id);
-  const isLoading = useSelector(getIsLoading);
-  const error = useSelector(getError);
+  useEffect(() => {
+    dispatch(fetchContacts());
+  }, [dispatch]);
 
   return (
-    <div className={css.div}>
-      {isLoading && !error && (
-        <FallingLines
-          color="#0824AF"
-          width="100"
-          visible={true}
-          ariaLabel="falling-lines-loading"
-        />
-      )}
-      <p className={css.p}>NAME: {contact.name}</p>
-      <p className={css.p}>PHONE: {contact.number}</p>
+    <div>
+      <ContactForm />
+      <DocumentTitle>Your contacts</DocumentTitle>
+      <div>{isLoading && "Request in progress..."}</div>
+      <SearchBox />
+      <ContactList />
     </div>
   );
 };
-
-export default ContactDetails;
+export default Contacts;

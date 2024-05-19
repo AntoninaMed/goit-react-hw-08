@@ -1,56 +1,78 @@
 import { useDispatch } from "react-redux";
-import { ErrorMessage, Field, Form, Formik } from "formik";
 import { register } from "../../redux/auth/operations";
 import css from "./RegistrationForm.module.css";
-
-const initialValues = {
-  name: "",
-  email: "",
-  password: "",
-};
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import * as Yup from "yup";
 
 export const RegistrationForm = () => {
   const dispatch = useDispatch();
 
+  const userSchema = Yup.object({
+    name: Yup.string()
+      .min(3, "Must be at least 3 characters")
+      .max(50, "Must be 50 characters or less")
+      .required("Required")
+      .trim(),
+    email: Yup.string().email().required("Required").trim(),
+    password: Yup.string()
+      .min(3, "Must be at least 3 characters")
+      .trim()
+      .max(10, "Must be 10 characters or less")
+      .required("Required"),
+  });
+
+  const initialValues = {
+    name: "",
+    email: "",
+    password: "",
+  };
+
   const handleSubmit = (values, { resetForm }) => {
-    dispatch(
-      register({
-        name: values.name,
-        email: values.email,
-        password: values.password,
-      })
-    );
+    dispatch(register(values));
     resetForm();
   };
 
   return (
-    <div className={css.div}>
-      <Formik initialValues={initialValues} onSubmit={handleSubmit}>
-        <Form className={css.form}>
-          <label className={css.label}>
-            NAME
-            <Field className={css.field} type="text" name="name" />
-            <ErrorMessage className={css.error} name="name" component="span" />
-          </label>
-          <label className={css.label}>
-            EMAIL
-            <Field className={css.field} type="email" name="email" />
-            <ErrorMessage className={css.error} name="email" component="span" />
-          </label>
-          <label className={css.label}>
-            PASSWORD
-            <Field className={css.field} type="password" name="password" />
-            <ErrorMessage
-              className={css.error}
-              name="password"
-              component="span"
-            />
-          </label>
-          <button className={css.button} type="submit">
-            SIGN UP
-          </button>
-        </Form>
-      </Formik>
-    </div>
+    <Formik
+      initialValues={initialValues}
+      onSubmit={handleSubmit}
+      validationSchema={userSchema}
+    >
+      <Form autoComplete="off" className={css.form}>
+        <div className={css.container}>
+          <Field
+            type="text"
+            name="name"
+            placeholder="Username"
+            className={css.file}
+          />
+          <ErrorMessage name="name" component="div" className={css.error} />
+        </div>
+
+        <div className={css.container}>
+          <Field
+            type="email"
+            name="email"
+            placeholder="Email"
+            className={css.file}
+          />
+          <ErrorMessage name="email" component="div" className={css.error} />
+        </div>
+
+        <div className={css.container}>
+          <Field
+            type="password"
+            name="password"
+            placeholder="Password"
+            className={css.file}
+          />
+          <ErrorMessage name="password" component="div" className={css.error} />
+        </div>
+
+        <button type="submit" className={css.btn}>
+          Register
+        </button>
+      </Form>
+    </Formik>
   );
 };

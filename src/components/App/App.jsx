@@ -1,76 +1,62 @@
-import { Routes, Route, Navigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { useEffect, lazy } from "react";
-import { PublicRoute } from "../PublicRoute";
-import { PrivateRoute } from "../PrivateRoute";
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import { refreshUser } from "../../redux/auth/operations";
+import { useEffect, lazy, Suspense } from "react";
+import { useDispatch } from "react-redux";
+import { Route, Routes } from "react-router-dom";
 import { Layout } from "../Layout/Layout";
+import { PrivateRoute } from "../PrivateRoute";
+import { RestrictedRoute } from "../RestrictedRoute";
+import { refreshUser } from "../../redux/auth/operations";
+import { useAuth } from "../../hooks/useAuth";
+import { Loader } from "../Loader/Loader";
 
-const Home = lazy(() => import("../../pages/Home/Home"));
-const ContactDetails = lazy(() =>
-  import("../../pages/ContactDetails/ContactDetails")
-);
+const HomePage = lazy(() => import("../../pages/Home/Home"));
+const RegisterPage = lazy(() => import("../../components/Register/Register"));
+const LoginPage = lazy(() => import("../../pages/LoginPage/LoginPage"));
 const ContactsPage = lazy(() =>
   import("../../pages/ContactsPage/ContactsPage")
 );
-const RegistrationPage = lazy(() =>
-  import("../../pages/RegistrationPage/RegistrationPage")
-);
-const LogInPage = lazy(() => import("../../pages/LoginPage/LoginPage"));
 
 export const App = () => {
   const dispatch = useDispatch();
-  const isRefreshing = useSelector((state) => state.auth.isRefreshing);
+  const { isRefreshing } = useAuth();
 
   useEffect(() => {
     dispatch(refreshUser());
   }, [dispatch]);
 
-  if (isRefreshing) {
-    return <div>Loading...</div>;
-  }
-
   return (
-    <div
-      style={{
-        height: "100vh",
-        fontSize: 20,
-        color: "#010101",
-        textAlign: "center",
-      }}
-    >
-      <Routes>
-        <Route path="/" element={<Layout />}>
-          <Route index element={<Home />} />
-          <Route
-            path="/login"
-            element={
-              <PublicRoute redirectTo="/contacts" component={LogInPage} />
-            }
-          />
-          <Route
-            path="/register"
-            element={
-              <PublicRoute
-                redirectTo="/contacts"
-                component={RegistrationPage}
-              />
-            }
-          />
-          <Route
-            path="/contacts"
-            element={
-              <PrivateRoute redirectTo="/login">
-                <ContactsPage />
-              </PrivateRoute>
-            }
-          />
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Route>
-      </Routes>
-      <ToastContainer />
-    </div>
+    <Layout>
+      {isRefreshing ? (
+        <b>
+          <Loader />
+        </b>
+      ) : (
+        <Suspense fallback={null}>
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route
+              path="/register"
+              element={
+                <RestrictedRoute
+                  redirectTo="/contacts"
+                  component={RegisterPage}
+                />
+              }
+            />
+            <Route
+              path="/login"
+              element={
+                <RestrictedRoute redirectTo="/contacts" component={LoginPage} />
+              }
+            />
+            <Route
+              path="/contacts"
+              element={
+                <PrivateRoute redirectTo="/login" component={ContactsPage} />
+              }
+            />
+          </Routes>
+        </Suspense>
+      )}
+    </Layout>
   );
 };

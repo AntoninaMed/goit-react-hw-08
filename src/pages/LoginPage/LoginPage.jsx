@@ -1,11 +1,13 @@
+import { DocumentTitle } from "../../components/App/DocumentTitle";
 import { LoginForm } from "../../components/LoginForm/LoginForm";
 
-const LogInPage = () => {
+const Login = () => {
   return (
     <div>
+      <DocumentTitle>Login</DocumentTitle>
       <LoginForm />
     </div>
   );
 };
 
-export default LogInPage;
+export default Login;

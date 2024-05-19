@@ -1,48 +1,64 @@
-import { ErrorMessage, Field, Form, Formik } from "formik";
 import { useDispatch } from "react-redux";
 import { logIn } from "../../redux/auth/operations";
 import css from "./LoginForm.module.css";
-
-const initialValues = {
-  email: "",
-  password: "",
-};
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import * as Yup from "yup";
 
 export const LoginForm = () => {
   const dispatch = useDispatch();
-  const handleSubmit = (values, { resetForm }) => {
-    dispatch(
-      logIn({
-        email: values.email,
-        password: values.password,
-      })
-    );
-    resetForm();
+
+  const initialValues = {
+    email: "",
+    password: "",
+  };
+
+  const loginSchema = Yup.object().shape({
+    email: Yup.string()
+      .email("Invalid email address")
+      .required("Email is required"),
+    password: Yup.string().required("Password is required"),
+  });
+
+  const handleSubmit = async (values, { resetForm }) => {
+    try {
+      await dispatch(logIn(values));
+      resetForm();
+    } catch (error) {
+      console.log("Login error");
+    }
   };
 
   return (
-    <div className={css.div}>
-      <Formik initialValues={initialValues} onSubmit={handleSubmit}>
-        <Form className={css.form}>
-          <label className={css.label}>
-            EMAIL
-            <Field className={css.field} type="email" name="email" />
-            <ErrorMessage className={css.error} name="email" component="span" />
-          </label>
-          <label className={css.label}>
-            PASSWORD
-            <Field className={css.field} type="password" name="password" />
-            <ErrorMessage
-              className={css.error}
-              name="password"
-              component="span"
-            />
-          </label>
-          <button className={css.button} type="submit">
-            LOG IN
-          </button>
-        </Form>
-      </Formik>
-    </div>
+    <Formik
+      initialValues={initialValues}
+      validationSchema={loginSchema}
+      onSubmit={handleSubmit}
+    >
+      <Form autoComplete="off" className={css.form}>
+        <div className={css.container}>
+          <Field
+            type="email"
+            name="email"
+            placeholder="Email"
+            className={css.file}
+          />
+          <ErrorMessage name="email" component="div" className={css.error} />
+        </div>
+
+        <div className={css.container}>
+          <Field
+            type="password"
+            name="password"
+            placeholder="Password"
+            className={css.file}
+          />
+          <ErrorMessage name="password" component="div" className={css.error} />
+        </div>
+
+        <button type="submit" className={css.btn}>
+          Log In
+        </button>
+      </Form>
+    </Formik>
   );
 };
