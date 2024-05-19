@@ -5,7 +5,7 @@ import {
   selectError,
   selectIsLoading,
   selectFilteredContacts,
-} from "../../redux/auth/selectors";
+} from "../../redux/filters/selectors";
 import { Loader } from "../Loader/Loader";
 import css from "./SearchBox.module.css";
 
