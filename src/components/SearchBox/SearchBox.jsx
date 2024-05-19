@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
-import { changeNameFilter } from "../../redux/filters/slice";
-import { selectNameFilter } from "../../redux/filters/selectors";
+import { changeNameFilter } from "../../redux/filters/slice.js";
+import { selectNameFilter } from "../../redux/filters/selectors.js";
 import {
   selectError,
   selectIsLoading,
