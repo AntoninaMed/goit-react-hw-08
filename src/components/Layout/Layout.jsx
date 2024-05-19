@@ -1,24 +1,31 @@
-import { Outlet } from "react-router-dom";
+import React from "react";
+import { AppBar } from "../Header/Header";
+import { RotatingLines } from "react-loader-spinner";
 import { Suspense } from "react";
-import { FallingLines } from "react-loader-spinner";
-import { Header } from "../Header/Header";
 
-export const Layout = () => {
+export const Layout = ({ children }) => {
   return (
     <>
-      <Header />
+      <AppBar />
       <Suspense
         fallback={
-          <FallingLines
-            color="#0824AF"
-            width="100"
+          <RotatingLines
             visible={true}
-            ariaLabel="falling-lines-loading"
+            height="96"
+            width="96"
+            color="grey"
+            strokeWidth="5"
+            animationDuration="0.75"
+            ariaLabel="rotating-lines-loading"
+            wrapperStyle={{}}
+            wrapperClass=""
           />
         }
       >
-        <Outlet />
+        <main>{children}</main>
       </Suspense>
     </>
   );
 };
+
+export default Layout;

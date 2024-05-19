@@ -42,40 +42,32 @@ export const App = () => {
       }}
     >
       <Routes>
+        <Route
+          path="/login"
+          element={
+            <PublicRoute redirectTo="/contacts" component={<LogInPage />} />
+          }
+        />
+        <Route
+          path="/register"
+          element={
+            <PublicRoute
+              redirectTo="/contacts"
+              component={<RegistrationPage />}
+            />
+          }
+        />
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
           <Route
-            path="/login"
-            element={
-              <PublicRoute redirectTo="/contacts" component={<LogInPage />} />
-            }
-          />
-          <Route
-            path="/register"
-            element={
-              <PublicRoute
-                redirectTo="/contacts"
-                component={<RegistrationPage />}
-              />
-            }
-          />
-          <Route
             path="/contacts"
             element={
-              <PrivateRoute redirectTo="/login" component={<ContactsPage />} />
+              <PrivateRoute redirectTo="/login">
+                <ContactsPage />
+              </PrivateRoute>
             }
-          >
-            <Route
-              path=":id"
-              element={
-                <PrivateRoute
-                  redirectTo="/login"
-                  component={<ContactDetails />}
-                />
-              }
-            />
-          </Route>
-          <Route path="*" element={<Navigate to="/" replace={true} />} />
+          />
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Route>
       </Routes>
       <ToastContainer />
