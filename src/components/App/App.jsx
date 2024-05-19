@@ -42,23 +42,23 @@ export const App = () => {
       }}
     >
       <Routes>
-        <Route
-          path="/login"
-          element={
-            <PublicRoute redirectTo="/contacts" component={<LogInPage />} />
-          }
-        />
-        <Route
-          path="/register"
-          element={
-            <PublicRoute
-              redirectTo="/contacts"
-              component={<RegistrationPage />}
-            />
-          }
-        />
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
+          <Route
+            path="/login"
+            element={
+              <PublicRoute redirectTo="/contacts" component={LogInPage} />
+            }
+          />
+          <Route
+            path="/register"
+            element={
+              <PublicRoute
+                redirectTo="/contacts"
+                component={RegistrationPage}
+              />
+            }
+          />
           <Route
             path="/contacts"
             element={
